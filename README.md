@@ -1,5 +1,5 @@
 # Hej!
-Witaj w **kodzie źródłowym** gierki komputerowej "Gierka Komputerowa", czyli najlepszej gry w Polsce dostępnej **tak o!**
+Witaj w **kodzie źródłowym** gierki komputerowej ["Gierka Komputerowa"](https://gierkakomputerowa.surge.sh), czyli najlepszej gry w Polsce dostępnej **tak o!**
 
 Nie musisz nic pobierać ani konfigurować, każdy komputer z dostępem do internetu z **łatwością uruchomi tą gierkę!** Ten kod źródłowy jest mały, więc pomyślisz sobie, po co mi on?
 

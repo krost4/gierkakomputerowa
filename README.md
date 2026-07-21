@@ -1,2 +1,2 @@
-# gierkakomputerowa
-Najlepsza gra komputerowa dostępna bez pobierania!
+# Hej!
+Witaj w **kodzie źródłowym** gierki komputerowej "Gierka Komputerowa", czyli najlepszej gry w Polsce dostępnej **tak o!** Nie musisz nic pobierać ani konfigurować, każdy komputer z dostępem do internetu z **łatwością uruchomi tą gierkę!** Ten kod źródłowy jest mały, więc pomyślisz sobie, po co mi on? Właściwie, wiadomo że stare komputery, w sensie **M E G A** stare, nie mają dostępu do internetu, więc **oto on!** Kod źródłowy gierki komputerowej, który wklejasz na np. kartę SD, wkładasz do starego komputera i **hop!** Gierka działa jak należy, bez internetu! Zresztą, jak chcesz zrobić podobną gierkę, to możesz ten cały kod, CALUTKI kod, skopiować i zacząć budować swoją rekreację! No to co, **zaczynasz?**

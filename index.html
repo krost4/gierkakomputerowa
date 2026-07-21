@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
+
     <title>Gierka komputerowa</title>
 </head>
 
@@ -9,16 +11,24 @@
 
     <h1>Gierka komputerowa</h1>
 
+
     <button onclick="graj()">
         graj
     </button>
+
 
     <button onclick="informacje()">
         informacje
     </button>
 
+
     <button onclick="kontakt()">
         kontakt
+    </button>
+
+
+    <button onclick="kodZrodlowy()">
+        kod źródłowy (gitdom)
     </button>
 
 
@@ -26,25 +36,38 @@
 
         function graj() {
 
-            window.location.href = "gierka/";
+            window.location.href = "gra/";
 
         }
 
 
         function informacje() {
 
-            alert("gierka komputerowa wersja 1.0.0");
+            alert(
+                "gierka komputerowa wersja 1.0.0"
+            );
 
         }
 
 
         function kontakt() {
 
-            alert("tofoxgg@proton.me");
+            alert(
+                "tofoxgg@proton.me"
+            );
+
+        }
+
+
+        function kodZrodlowy() {
+
+            window.location.href =
+                "https://github.com/krost4/gierkakomputerowa";
 
         }
 
     </script>
 
 </body>
+
 </html>

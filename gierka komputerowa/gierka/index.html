@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+
+<meta charset="UTF-8">
+
+<title>gejmplej 😎😎✨🤣🤣🤣</title>
+<link rel="icon" type="image/x-icon" href="sprite1.png">
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    font-family: Arial, sans-serif;
+}
+
+#game {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+
+    background-image: url("bg.png");
+    background-size: cover;
+    background-position: center;
+
+    animation: shake 0.12s infinite;
+}
+
+.player,
+.enemy {
+    position: absolute;
+
+    width: 80px;
+    height: 80px;
+
+    object-fit: fill;
+
+    user-select: none;
+    pointer-events: none;
+}
+
+#timer {
+    position: absolute;
+
+    top: 10px;
+    left: 10px;
+
+    z-index: 10;
+
+    color: white;
+    background: black;
+
+    border: 3px solid white;
+
+    padding: 5px 10px;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
+@keyframes shake {
+
+    0% {
+        transform: translate(0, 0);
+    }
+
+    20% {
+        transform: translate(2px, -2px);
+    }
+
+    40% {
+        transform: translate(-2px, 1px);
+    }
+
+    60% {
+        transform: translate(1px, 2px);
+    }
+
+    80% {
+        transform: translate(-1px, -1px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+
+}
+
+#gameOver {
+
+    display: none;
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: white;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-direction: column;
+
+    color: black;
+
+    font-family: "Times New Roman", serif;
+
+    font-size: 48px;
+
+    text-align: center;
+
+}
+
+#gameOver button {
+
+    display: block;
+
+    margin-top: 20px;
+
+    padding: 5px 10px;
+
+    font-family: "Times New Roman", serif;
+
+    font-size: 16px;
+
+    background: #eeeeee;
+
+    color: black;
+
+    border: 2px outset #aaaaaa;
+
+    cursor: pointer;
+
+}
+
+#gameOver button:hover {
+
+    background: #dddddd;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="game">
+
+
+    <div id="timer">
+
+        CZAS: 0.0
+
+    </div>
+
+
+    <img
+        id="player"
+        class="player"
+        src="sprite1.png"
+    >
+
+
+    <img
+        id="enemy"
+        class="enemy"
+        src="sprite2.png"
+    >
+
+
+    <div id="gameOver">
+
+
+        konec gry :(
+
+
+        <div id="finalTime">
+
+            przeżyłeś: 0.0 sekund
+
+        </div>
+
+
+        <button onclick="restartGame()">
+
+            jeszcze raaz!!1!
+
+        </button>
+
+
+        <button onclick="goHome()">
+
+            do domuu
+
+        </button>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+const player =
+    document.getElementById("player");
+
+
+const enemy =
+    document.getElementById("enemy");
+
+
+const gameOver =
+    document.getElementById("gameOver");
+
+
+const timer =
+    document.getElementById("timer");
+
+
+const finalTime =
+    document.getElementById("finalTime");
+
+
+
+/*
+    TEN SAM PLIK AUDIO
+    ODTWARZANY W RÓŻNYCH MOMENTACH
+*/
+
+
+const goodbyeSound =
+    new Audio("goodbye.mp3");
+
+
+
+const OBJECT_WIDTH = 80;
+
+const OBJECT_HEIGHT = 80;
+
+
+
+let playerX =
+    window.innerWidth
+    /
+    2
+    -
+    OBJECT_WIDTH
+    /
+    2;
+
+
+let playerY =
+    window.innerHeight
+    /
+    2
+    -
+    OBJECT_HEIGHT
+    /
+    2;
+
+
+
+let enemyX =
+    Math.random()
+    *
+    (
+        window.innerWidth
+        -
+        OBJECT_WIDTH
+    );
+
+
+let enemyY =
+    Math.random()
+    *
+    (
+        window.innerHeight
+        -
+        OBJECT_HEIGHT
+    );
+
+
+
+let keys = {};
+
+let gameRunning = true;
+
+
+
+let startTime =
+    Date.now();
+
+
+let survivalTime = 0;
+
+
+
+let enemySpeed = 2.5;
+
+
+
+/*
+    LOSOWY CZAS DO NASTĘPNEGO
+    DŹWIĘKU
+
+    Pierwszy może pojawić się
+    po 5-20 sekundach.
+*/
+
+
+let nextSoundTime =
+    Math.random()
+    *
+    15
+    +
+    5;
+
+
+
+/*
+    POWIADOMIENIA
+*/
+
+
+let nextNotificationTime =
+    Math.random()
+    *
+    8
+    +
+    12;
+
+
+
+const notifications = [
+
+    "ej",
+
+    "on nadal cię goni",
+
+    "to chyba nie jest dobre",
+
+    "szybciej",
+
+    "nie patrz za siebie",
+
+    "gra działa prawidłowo",
+
+    "to nie jest bug",
+
+    "ups",
+
+    "czemu jeszcze żyjesz",
+
+    "on jest coraz bliżej",
+
+    "powodzenia lol",
+
+    "zły kierunek"
+
+];
+
+
+
+/*
+    KLAWISZE
+*/
+
+
+document.addEventListener(
+
+    "keydown",
+
+    function(event) {
+
+        keys[
+            event.key.toLowerCase()
+        ] = true;
+
+    }
+
+);
+
+
+document.addEventListener(
+
+    "keyup",
+
+    function(event) {
+
+        keys[
+            event.key.toLowerCase()
+        ] = false;
+
+    }
+
+);
+
+
+
+/*
+    ODTWARZANIE GOODBYE.MP3
+*/
+
+
+function playGoodbyeSound() {
+
+
+    goodbyeSound.currentTime = 0;
+
+
+    goodbyeSound.play()
+        .catch(
+
+            function(error) {
+
+                console.log(
+                    "Dźwięk zablokowany:",
+                    error
+                );
+
+            }
+
+        );
+
+}
+
+
+
+/*
+    KOLIZJA
+*/
+
+
+function checkCollision() {
+
+
+    return (
+
+        playerX
+        <
+        enemyX
+        +
+        OBJECT_WIDTH
+
+        &&
+
+        playerX
+        +
+        OBJECT_WIDTH
+        >
+        enemyX
+
+        &&
+
+        playerY
+        <
+        enemyY
+        +
+        OBJECT_HEIGHT
+
+        &&
+
+        playerY
+        +
+        OBJECT_HEIGHT
+        >
+        enemyY
+
+    );
+
+}
+
+
+
+/*
+    POWIADOMIENIE
+*/
+
+
+function showNotification() {
+
+
+    const message =
+
+        notifications[
+
+            Math.floor(
+
+                Math.random()
+                *
+                notifications.length
+
+            )
+
+        ];
+
+
+
+    if (
+
+        "Notification"
+        in
+        window
+
+    ) {
+
+
+        if (
+
+            Notification.permission
+            ===
+            "granted"
+
+        ) {
+
+
+            new Notification(
+
+                "uciekaj lol",
+
+                {
+
+                    body: message
+
+                }
+
+            );
+
+        }
+
+
+        else if (
+
+            Notification.permission
+            !==
+            "denied"
+
+        ) {
+
+
+            Notification
+                .requestPermission();
+
+        }
+
+    }
+
+
+
+    nextNotificationTime =
+
+        survivalTime
+        +
+        Math.random()
+        *
+        20
+        +
+        25;
+
+}
+
+
+
+/*
+    GŁÓWNA PĘTLA
+*/
+
+
+function moveGame() {
+
+
+    if (!gameRunning) {
+
+        return;
+
+    }
+
+
+
+    survivalTime =
+
+        (
+
+            Date.now()
+            -
+            startTime
+
+        )
+        /
+        1000;
+
+
+
+    timer.innerText =
+
+        "CZAS: "
+        +
+        survivalTime.toFixed(1);
+
+
+
+    /*
+        LOSOWY DŹWIĘK
+    */
+
+
+    if (
+
+        survivalTime
+        >=
+        nextSoundTime
+
+    ) {
+
+
+        playGoodbyeSound();
+
+
+
+        /*
+            NASTĘPNY DŹWIĘK
+            ZA 15-40 SEKUND
+        */
+
+
+        nextSoundTime =
+
+            survivalTime
+            +
+            Math.random()
+            *
+            25
+            +
+            15;
+
+    }
+
+
+
+    /*
+        POWIADOMIENIA
+    */
+
+
+    if (
+
+        survivalTime
+        >=
+        nextNotificationTime
+
+    ) {
+
+        showNotification();
+
+    }
+
+
+
+    /*
+        GRACZ
+    */
+
+
+    const playerSpeed = 5;
+
+
+
+    if (
+
+        keys["w"]
+        ||
+        keys["arrowup"]
+
+    ) {
+
+        playerY -= playerSpeed;
+
+    }
+
+
+
+    if (
+
+        keys["s"]
+        ||
+        keys["arrowdown"]
+
+    ) {
+
+        playerY += playerSpeed;
+
+    }
+
+
+
+    if (
+
+        keys["a"]
+        ||
+        keys["arrowleft"]
+
+    ) {
+
+        playerX -= playerSpeed;
+
+    }
+
+
+
+    if (
+
+        keys["d"]
+        ||
+        keys["arrowright"]
+
+    ) {
+
+        playerX += playerSpeed;
+
+    }
+
+
+
+    /*
+        GRANICE
+    */
+
+
+    playerX = Math.max(
+
+        0,
+
+        Math.min(
+
+            window.innerWidth
+            -
+            OBJECT_WIDTH,
+
+            playerX
+
+        )
+
+    );
+
+
+    playerY = Math.max(
+
+        0,
+
+        Math.min(
+
+            window.innerHeight
+            -
+            OBJECT_HEIGHT,
+
+            playerY
+
+        )
+
+    );
+
+
+
+    player.style.left =
+        playerX
+        +
+        "px";
+
+
+    player.style.top =
+        playerY
+        +
+        "px";
+
+
+
+    /*
+        PRZECIWNIK
+    */
+
+
+    let dx =
+        playerX
+        -
+        enemyX;
+
+
+    let dy =
+        playerY
+        -
+        enemyY;
+
+
+    let distance =
+        Math.sqrt(
+
+            dx * dx
+            +
+            dy * dy
+
+        );
+
+
+
+    enemySpeed =
+
+        2.5
+        +
+        Math.floor(
+
+            survivalTime
+            /
+            10
+
+        )
+        *
+        0.3;
+
+
+
+    if (
+
+        distance
+        >
+        0
+
+    ) {
+
+
+        enemyX +=
+
+            (
+
+                dx
+                /
+                distance
+
+            )
+            *
+            enemySpeed;
+
+
+
+        enemyY +=
+
+            (
+
+                dy
+                /
+                distance
+
+            )
+            *
+            enemySpeed;
+
+    }
+
+
+
+    enemy.style.left =
+        enemyX
+        +
+        "px";
+
+
+    enemy.style.top =
+        enemyY
+        +
+        "px";
+
+
+
+    /*
+        KOLIZJA
+    */
+
+
+    if (
+
+        checkCollision()
+
+    ) {
+
+        endGame();
+
+    }
+
+
+
+    requestAnimationFrame(
+
+        moveGame
+
+    );
+
+}
+
+
+
+/*
+    KONIEC GRY
+*/
+
+
+function endGame() {
+
+
+    gameRunning = false;
+
+
+
+    finalTime.innerText =
+
+        "przeżyłeś: "
+        +
+        survivalTime.toFixed(1)
+        +
+        " sekund";
+
+
+
+    gameOver.style.display =
+        "flex";
+
+
+
+    /*
+        GOODBYE.MP3
+        GRA JESZCZE RAZ
+        PO PRZEGRANEJ
+    */
+
+
+    playGoodbyeSound();
+
+}
+
+
+
+/*
+    RESTART
+*/
+
+
+function restartGame() {
+
+
+    playerX =
+
+        window.innerWidth
+        /
+        2
+        -
+        OBJECT_WIDTH
+        /
+        2;
+
+
+
+    playerY =
+
+        window.innerHeight
+        /
+        2
+        -
+        OBJECT_HEIGHT
+        /
+        2;
+
+
+
+    enemyX =
+
+        Math.random()
+        *
+        (
+            window.innerWidth
+            -
+            OBJECT_WIDTH
+
+        );
+
+
+    enemyY =
+
+        Math.random()
+        *
+        (
+            window.innerHeight
+            -
+            OBJECT_HEIGHT
+
+        );
+
+
+
+    startTime =
+        Date.now();
+
+
+
+    survivalTime = 0;
+
+
+
+    enemySpeed = 2.5;
+
+
+
+    nextSoundTime =
+
+        Math.random()
+        *
+        15
+        +
+        5;
+
+
+
+    nextNotificationTime =
+
+        Math.random()
+        *
+        8
+        +
+        12;
+
+
+
+    player.style.left =
+        playerX
+        +
+        "px";
+
+
+    player.style.top =
+        playerY
+        +
+        "px";
+
+
+    enemy.style.left =
+        enemyX
+        +
+        "px";
+
+
+    enemy.style.top =
+        enemyY
+        +
+        "px";
+
+
+
+    timer.innerText =
+        "CZAS: 0.0";
+
+
+
+    gameOver.style.display =
+        "none";
+
+
+
+    goodbyeSound.pause();
+
+    goodbyeSound.currentTime = 0;
+
+
+
+    gameRunning = true;
+
+
+
+    moveGame();
+
+}
+
+
+
+/*
+    DO DOMU
+*/
+
+
+function goHome() {
+
+
+    window.location.href =
+        "https://gierkakomputerowa.surge.sh/index.html";
+
+}
+
+
+
+/*
+    START
+*/
+
+
+moveGame();
+
+
+</script>
+
+
+</body>
+
+</html>

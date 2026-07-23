@@ -12,3 +12,7 @@ Zresztą, jak chcesz zrobić podobną gierkę, to możesz ten cały kod, CALUTKI
 - Nie zmieniaj nazw plików! Specjalnie je nazwałem tak prosto, żeby... **pasowało.** Jak zmienisz nazwę, będzie trzeba zmienić nazwę też w "indeksie"!
 - Skoro nie możesz zmienić nazwy plików, a planujesz wstawić nowy obraz, to pamiętaj, żeby ten plik nazwać **tak samo jak poprzedni!**
 - Tak na serio, nie bądź leniem i znajdź te marne nazwy.
+
+## WAŻNA INFORMACJA!!
+
+Może się zdarzyć takie coś, że folder **gierkakomputerowa** po prostu zniknie. To dlatego, że twórca aktualizuje kod gry, bo wiesz... **ciągle coś zmieniam.**
